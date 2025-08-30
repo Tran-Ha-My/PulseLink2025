@@ -8,7 +8,10 @@ im writing this README.md, tell me where i might be wrong and also tell me how i
 **Team**: Valentin, Amy Le, Hanah Dau
 ---
 ## UI DEMO
+REACT UI DEMO:
 ![Demo Screenshot](frontend/public/UI-demo.png)
+
+Example Spectrogram converted from audio using STFT:
 ![Demo Spectrogram](frontend/public/spectrogram.png)
 ---
 ## Quick Architecture
