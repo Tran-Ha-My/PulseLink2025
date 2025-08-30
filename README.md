@@ -6,7 +6,7 @@ im writing this README.md, tell me where i might be wrong and also tell me how i
 **Stack**: ReSpeaker Mic Array V2.0 (external DOA microphone) + FastAPI + MongoDB + React.js + Three.js + Blender + TensorFlow + Audio Processing Algorithm (STFT- Short-Time Fourier Transform)
 
 **Team**: 
-Valentin (main dev), Amy Le (UX), Hanah Dau (Blender)
+- Valentin (main dev), Amy Le (UX), Hanah Dau (Blender)
 ---
 ## UI DEMO
 REACT UI DEMO:
