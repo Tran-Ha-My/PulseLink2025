@@ -45,7 +45,7 @@ npm start
 ```
 
 ## Backend setup
-** 1.	Activate the virtual environment
+** 1.	Activate the virtual environment**
 
 Navigate to the backend folder and activate the .venv:
 
@@ -60,12 +60,12 @@ Windows (PowerShell):
 cd backend
 .venv\Scripts\Activate.ps1
 ```
-***2.	Install dependencies
+**2.	Install dependencies**
 ```
 pip install -r requirements.txt
 ```
 
-***3. Run the backend server
+**3. Run the backend server**
 ```
 uvicorn main:app --reload
 ```
