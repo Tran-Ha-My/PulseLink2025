@@ -45,7 +45,7 @@ npm start
 ```
 
 ## Backend setup
-** 1.	Activate the virtual environment**
+**1.	Activate the virtual environment**
 
 Navigate to the backend folder and activate the .venv:
 
