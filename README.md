@@ -9,6 +9,7 @@ im writing this README.md, tell me where i might be wrong and also tell me how i
 ---
 ## UI DEMO
 ![Demo Screenshot](frontend/public/UI-demo.png)
+![Demo Spectrogram](frontend/public/spectrogram.png)
 ---
 ## Quick Architecture
 ```
@@ -30,13 +31,11 @@ TensorFlow → CNN Prediction → React Dashboard
 ---
 ## Starting the WebApp
 **Locating the right directory**
-`
-cd FoundersHack2025
+```
 cd frontend/src
-`
-
+```
 **Starting**
-`
+```
 npm install
 npm start
-`
+```
