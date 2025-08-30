@@ -1,5 +1,3 @@
-im writing this README.md, tell me where i might be wrong and also tell me how i can put a demo image to this file
-
 ##  Project Overview: "PulseLink"
 **Goal**: Distant lung sound analysis using .wav audio files --STFT-→ Spectrogram → CNN Model Prediction → React UI 
 
