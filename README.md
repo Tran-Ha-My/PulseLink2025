@@ -12,6 +12,7 @@ REACT UI DEMO:
 ![Demo Screenshot](frontend/public/UI-demo.png)
 
 Example Spectrogram converted from audio using STFT:
+
 ![Demo Spectrogram](frontend/public/spectrogram.png)
 ---
 ## Quick Architecture
@@ -41,4 +42,35 @@ cd frontend/src
 ```
 npm install
 npm start
+```
+
+## Backend setup
+** 1.	Activate the virtual environment
+
+Navigate to the backend folder and activate the .venv:
+
+Mac/Linux:
+```
+cd backend
+source .venv/bin/activate
+```
+
+Windows (PowerShell):
+```
+cd backend
+.venv\Scripts\Activate.ps1
+```
+***2.	Install dependencies
+```
+pip install -r requirements.txt
+```
+
+***3. Run the backend server
+```
+uvicorn main:app --reload
+```
+
+Once running, you can visit:
+```
+http://127.0.0.1:8000
 ```
