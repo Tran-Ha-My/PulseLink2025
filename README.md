@@ -6,6 +6,13 @@
 **Team**: 
 - Valentin (main dev), Amy Le (UX), Hanah Dau (Blender)
 ---
+
+### Notes from developer code adaptations
+
+- This project reuses some **UI components** (React buttons, Button CSS animations and styling, and transparent card styles) from my previous personal React project as boilerplate. 
+
+- All core functionality, backend logic, MQTT setups, Spectrogram conversion, Microphone (ReSpeaker Mic) control etc. and core features for PulseLink were designed and built during this hackathon. Except for the algorithm pipeline/ web architecture was thought and planned beforehand in 2 weeks on paper notes and whiteboard.
+
 ## UI DEMO
 REACT UI DEMO:
 ![Demo Screenshot](frontend/public/UI-demo.png)
