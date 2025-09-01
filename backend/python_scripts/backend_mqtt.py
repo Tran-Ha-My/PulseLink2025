@@ -8,13 +8,17 @@ import os
 import sounddevice as sd
 
 ## REAL-TIME AUDIO READING FROM MICROPHONE 
-# CONFIG
+# CONFIGURATION
 BROKER = "localhost"       # MQTT broker address
-PORT = 1883
+PORT = 9001                # Port for WebSocket connection
 TOPIC_AUDIO = "lung_sounds"
 TOPIC_PREDICTION = "lung_predictions"
 SPECTROGRAM_DIR = "./spectrograms1"
 
+# Initialize MQTT client with WebSocket transport
+client = mqtt.Client(transport="websockets")
+
+# Ensure spectrogram directory exists
 os.makedirs(SPECTROGRAM_DIR, exist_ok=True)
 
 # Initialize CNN model
@@ -23,19 +27,20 @@ model = CNN_Model()
 SAMPLE_RATE = 16000
 CHUNK_SIZE = 1024  # samples per frame
 
-publisher_client = mqtt.Client()
-publisher_client.connect(BROKER, PORT)
-
 stream = None
 
 def audio_callback(indata, frames, time, status):
+    """Callback function for audio input stream."""
     if status:
-        print(status)
+        print(f"Audio stream status: {status}")
     chunk_bytes = indata.tobytes()
-    publisher_client.publish(TOPIC_AUDIO, chunk_bytes)
+    client.publish(TOPIC_AUDIO, chunk_bytes)
 
-# Helper func: AUDIO -> SPECTROGRAM
 def audio_to_spectrogram(audio_array, sr, filename):
+    """
+    Converts audio array to a spectrogram image and saves it.
+    Returns the filepath of the saved image.
+    """
     plt.figure(figsize=(2, 2))
     plt.specgram(audio_array, Fs=sr, NFFT=256, noverlap=128, cmap='viridis')
     plt.axis('off')
@@ -45,6 +50,7 @@ def audio_to_spectrogram(audio_array, sr, filename):
     return filepath
 
 def start_recording():
+    """Starts the audio recording stream."""
     global stream
     if stream is None:
         stream = sd.InputStream(channels=1, samplerate=SAMPLE_RATE,
@@ -56,6 +62,7 @@ def start_recording():
         print("Audio stream already running.")
 
 def stop_recording():
+    """Stops the audio recording stream."""
     global stream
     if stream is not None:
         stream.stop()
@@ -65,44 +72,51 @@ def stop_recording():
     else:
         print("Audio stream is not running.")
 
-# MQTT callback
 def on_message(client, userdata, msg):
+    """
+    Callback for MQTT message reception.
+    Logs received messages and handles commands and audio data.
+    """
     topic = msg.topic
-    payload = msg.payload.decode()
-    if topic == "mic_control":
-        if payload == "start_recording":
-            print("Starting recording...")
-            # call ReSpeaker start function
-            start_recording()
-        elif payload == "stop_recording":
-            print("Stopping recording...")
-            stop_recording()  # stop and process
-    elif topic == "lung_sounds":
-        # existing message handling
-        process_lung_sound(payload)
-         
-    audio_bytes = msg.payload
+    payload = msg.payload
     try:
-        # read audio 
-        audio_array, sr = sf.read(io.BytesIO(audio_bytes))
-        
-        # convert to spectrogram PNG
-        spect_file = audio_to_spectrogram(audio_array, sr, "latest.png")
-        
-        # predict using my CNN
-        prediction = model.predict(spect_file)
-        
-        # PREDICTION THAT FRONTEND IS GRABBING !!
-        client.publish(TOPIC_PREDICTION, str(prediction))
-        print("Published prediction:", prediction)
-    except Exception as e:
-        print("Error processing audio:", e)
+        decoded_payload = payload.decode()
+    except Exception:
+        decoded_payload = "<binary data>"
 
-# MQTT setup
-client = mqtt.Client()
+    print(f"Received message on topic '{topic}': {decoded_payload}")
+
+    if topic == "mic_control":
+        if decoded_payload == "start_recording":
+            print("Starting recording...")
+            start_recording()
+        elif decoded_payload == "stop_recording":
+            print("Stopping recording...")
+            stop_recording()
+    elif topic == TOPIC_AUDIO:
+        audio_bytes = payload
+        try:
+            # Read audio from bytes
+            audio_array, sr = sf.read(io.BytesIO(audio_bytes))
+            
+            # Convert audio to spectrogram PNG
+            spect_file = audio_to_spectrogram(audio_array, sr, "latest.png")
+            
+            # Predict using CNN model
+            prediction = model.predict(spect_file)
+            
+            # Publish prediction for frontend consumption
+            client.publish(TOPIC_PREDICTION, str(prediction))
+            print("Published prediction:", prediction)
+        except Exception as e:
+            print("Error processing audio:", e)
+
+# MQTT client setup
 client.on_message = on_message
 client.connect(BROKER, PORT)
+client.subscribe("mic_control")
 client.subscribe(TOPIC_AUDIO)
-print("Backend subscribed to", TOPIC_AUDIO)
+print("Backend subscribed to topics: mic_control, lung_sounds")
 
+# Start MQTT loop to process messages indefinitely
 client.loop_forever()
