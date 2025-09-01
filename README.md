@@ -1,17 +1,20 @@
 ##  Project Overview: "PulseLink"
-**Goal**: Distant lung sound analysis using .wav audio files --STFT-→ Spectrogram → CNN Model Prediction → React UI. Can Diagnose common lung diseases including: URTI, COPD, Asthma, Bronchiectasis, and LRTI. 
+**Goal**: Distant lung sound analysis using .wav audio files --STFT-→ Spectrogram → CNN Model Prediction → React UI. Can diagnose common lung diseases including: URTI, COPD, Asthma, Bronchiectasis, and LRTI. 
 
 **Stack**: ReSpeaker Mic Array V2.0 (external DOA microphone) + FastAPI + MongoDB + React.js + Three.js + Blender + TensorFlow + Audio Processing Algorithm (STFT- Short-Time Fourier Transform)
 
 **Team**: 
-- Valentin (main dev), Amy Le (UX), Hanah Dau (Blender)
+- Valentin (dev), Amy Le (Product & Market Research), Hanah Dau (Blender Artist 3D Lung Model)
 ---
 
 ### Notes from developer code adaptations
 
 - This project reuses some **UI components** (React buttons, Button CSS animations and styling, and transparent card styles) from my previous personal React project as boilerplate. 
 
-- All core functionality, backend logic, MQTT setups, Spectrogram conversion, Microphone (ReSpeaker Mic) control etc. and core features for PulseLink were designed and built during this hackathon. Except for the algorithm pipeline/ web architecture was thought and planned beforehand in 2 weeks on paper notes and whiteboard.
+- All core functionality, backend logic, MQTT setups, Spectrogram conversion, Microphone (ReSpeaker Mic) control, etc. and core features for PulseLink were designed and built during this hackathon. Except for the algorithm pipeline/ web architecture was thought and planned beforehand in 2 weeks on paper notes and whiteboard.
+  
+- The default Confidence level will default to 59% because our external microphone isn't connected. The core frontend logic can be found in 'PulseLink2025/frontend/src/App.js'
+- The CNN model (through TensorFlow) can be found in 'PulseLink2025/backend/python_scripts/cnn_model.py' and trained in 'PulseLink2025/backend/python_scripts/prediction.py', as well as the 'to_spectrogram.py' script in the same parent folder that converts all 920 audio (.wav) files in 'wav_folder' to all 920 spectrograms in '/spectrograms1'.
 
 ## UI DEMO
 REACT UI DEMO:
