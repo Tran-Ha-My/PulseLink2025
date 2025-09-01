@@ -125,7 +125,7 @@ class CNN_Model:
 
         # Model action
 
-        self.cnn_model.fit(x=training_set,
+        history = self.cnn_model.fit(x=training_set,
                             steps_per_epoch=step_train_size,
                             validation_data=validation_set,
                             validation_steps=step_valid_size,
@@ -143,6 +143,8 @@ class CNN_Model:
         self.training_predictions = [labels[k] for k in predicted_class_indices]
         print(self.training_predictions[0:10])
         print(testset_df.head(10))
+
+        return history
 
     # function takes a file path to a single image or a folder
     def predict(self, path):
