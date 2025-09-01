@@ -5,20 +5,20 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 from cnn_model import CNN_Model
 import os
-
+## REAL-TIME AUDIO READING FROM MICROPHONE 
 # CONFIG
 BROKER = "localhost"       # MQTT broker address
 PORT = 1883
 TOPIC_AUDIO = "lung_sounds"
 TOPIC_PREDICTION = "lung_predictions"
-SPECTROGRAM_DIR = "temp_spectrograms"
+SPECTROGRAM_DIR = "./spectrograms1"
 
 os.makedirs(SPECTROGRAM_DIR, exist_ok=True)
 
 # Initialize CNN model
 model = CNN_Model()
 
-# Helper func: convert audio chunk to a spectrogram file
+# Helper func: AUDIO -> SPECTROGRAM
 def audio_to_spectrogram(audio_array, sr, filename):
     plt.figure(figsize=(2, 2))
     plt.specgram(audio_array, Fs=sr, NFFT=256, noverlap=128, cmap='viridis')
@@ -41,7 +41,7 @@ def on_message(client, userdata, msg):
         # predict using my CNN
         prediction = model.predict(spect_file)
         
-        # publish prediction
+        # PREDICTION THAT FRONTEND IS GRABBING !!
         client.publish(TOPIC_PREDICTION, str(prediction))
         print("Published prediction:", prediction)
     except Exception as e:

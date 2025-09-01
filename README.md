@@ -1,5 +1,5 @@
 ##  Project Overview: "PulseLink"
-**Goal**: Distant lung sound analysis using .wav audio files --STFT-→ Spectrogram → CNN Model Prediction → React UI 
+**Goal**: Distant lung sound analysis using .wav audio files --STFT-→ Spectrogram → CNN Model Prediction → React UI. Can Diagnose common lung diseases including: URTI, COPD, Asthma, Bronchiectasis, and LRTI. 
 
 **Stack**: ReSpeaker Mic Array V2.0 (external DOA microphone) + FastAPI + MongoDB + React.js + Three.js + Blender + TensorFlow + Audio Processing Algorithm (STFT- Short-Time Fourier Transform)
 
