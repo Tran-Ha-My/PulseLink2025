@@ -5,6 +5,8 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 from cnn_model import CNN_Model
 import os
+import sounddevice as sd
+
 ## REAL-TIME AUDIO READING FROM MICROPHONE 
 # CONFIG
 BROKER = "localhost"       # MQTT broker address
@@ -18,6 +20,20 @@ os.makedirs(SPECTROGRAM_DIR, exist_ok=True)
 # Initialize CNN model
 model = CNN_Model()
 
+SAMPLE_RATE = 16000
+CHUNK_SIZE = 1024  # samples per frame
+
+publisher_client = mqtt.Client()
+publisher_client.connect(BROKER, PORT)
+
+stream = None
+
+def audio_callback(indata, frames, time, status):
+    if status:
+        print(status)
+    chunk_bytes = indata.tobytes()
+    publisher_client.publish(TOPIC_AUDIO, chunk_bytes)
+
 # Helper func: AUDIO -> SPECTROGRAM
 def audio_to_spectrogram(audio_array, sr, filename):
     plt.figure(figsize=(2, 2))
@@ -28,8 +44,43 @@ def audio_to_spectrogram(audio_array, sr, filename):
     plt.close()
     return filepath
 
+def start_recording():
+    global stream
+    if stream is None:
+        stream = sd.InputStream(channels=1, samplerate=SAMPLE_RATE,
+                                blocksize=CHUNK_SIZE,
+                                callback=audio_callback)
+        stream.start()
+        print("Audio stream started.")
+    else:
+        print("Audio stream already running.")
+
+def stop_recording():
+    global stream
+    if stream is not None:
+        stream.stop()
+        stream.close()
+        stream = None
+        print("Audio stream stopped.")
+    else:
+        print("Audio stream is not running.")
+
 # MQTT callback
 def on_message(client, userdata, msg):
+    topic = msg.topic
+    payload = msg.payload.decode()
+    if topic == "mic_control":
+        if payload == "start_recording":
+            print("Starting recording...")
+            # call ReSpeaker start function
+            start_recording()
+        elif payload == "stop_recording":
+            print("Stopping recording...")
+            stop_recording()  # stop and process
+    elif topic == "lung_sounds":
+        # existing message handling
+        process_lung_sound(payload)
+         
     audio_bytes = msg.payload
     try:
         # read audio 
@@ -55,29 +106,3 @@ client.subscribe(TOPIC_AUDIO)
 print("Backend subscribed to", TOPIC_AUDIO)
 
 client.loop_forever()
-
-# continuously records audio and publishes it to the MQTT topic
-# completing the end-to-end real-time pipeline
-import sounddevice as sd
-
-SAMPLE_RATE = 16000
-CHUNK_SIZE = 1024  # samples per frame
-
-# Publisher client
-publisher_client = mqtt.Client()
-publisher_client.connect(BROKER, PORT)
-
-def audio_callback(indata, frames, time, status):
-    if status:
-        print(status)
-    chunk_bytes = indata.tobytes()
-    publisher_client.publish(TOPIC_AUDIO, chunk_bytes)
-
-# Start audio stream
-with sd.InputStream(channels=1, samplerate=SAMPLE_RATE,
-                    blocksize=CHUNK_SIZE,
-                    callback=audio_callback):
-    print("Recording and publishing ReSpeaker audio to MQTT...")
-    sd.sleep(1000000)
-    
-    
