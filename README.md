@@ -3,8 +3,6 @@
 
 **Stack**: ReSpeaker Mic Array V2.0 (external DOA microphone) + FastAPI + MongoDB + React.js + Three.js + Blender + TensorFlow + Audio Processing Algorithm (STFT- Short-Time Fourier Transform)
 
-**Team**: 
-- Valentin (dev), Amy Le (Product & Market Research), Hanah Dau (Blender Artist 3D Lung Model)
 ---
 
 ### Notes from developer code adaptations
